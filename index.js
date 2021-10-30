@@ -32,6 +32,13 @@ async function run() {
             res.send(services)
         })
 
+        // GET ORDERS API
+        app.get('/orders', async (req, res) => {
+            const cursor = ordersCollection.find({})
+            const orders = await cursor.toArray()
+            res.send(orders)
+        })
+
         // GET Orders by single email address
         app.get('/orders/:email', async (req, res) => {
             const email = req.params.email
@@ -42,6 +49,13 @@ async function run() {
 
         //Detele API
         app.delete('/orders/:email/:id', async (req, res) => {
+            const id = (req.params.id);
+            const query = { _id: ObjectId(id), }
+            const result = await ordersCollection.deleteOne(query)
+            res.json(result)
+
+        })
+        app.delete('/orders/:id', async (req, res) => {
             const id = (req.params.id);
             const query = { _id: ObjectId(id), }
             const result = await ordersCollection.deleteOne(query)
@@ -62,6 +76,19 @@ async function run() {
             const info = req.body
             const result = await ordersCollection.insertOne(info)
             res.json(result)
+        })
+
+        // UPDATE API
+        app.put('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    status: "approved",
+                },
+            };
+            const result = await ordersCollection.updateOne(filter, updateDoc);
+            res.send(result);
         })
 
     }
