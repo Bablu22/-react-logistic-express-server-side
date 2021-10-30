@@ -55,6 +55,13 @@ async function run() {
             res.json(result)
 
         })
+        app.delete('/services/:id', async (req, res) => {
+            const id = (req.params.id);
+            const query = { _id: ObjectId(id), }
+            const result = await servicesCollection.deleteOne(query)
+            res.json(result)
+            console.log('deleted')
+        })
         app.delete('/orders/:id', async (req, res) => {
             const id = (req.params.id);
             const query = { _id: ObjectId(id), }
@@ -77,7 +84,12 @@ async function run() {
             const result = await ordersCollection.insertOne(info)
             res.json(result)
         })
-
+        // POST SERVICE API
+        app.post('/services', async (req, res) => {
+            const info = req.body
+            const result = await servicesCollection.insertOne(info)
+            res.send(result)
+        })
         // UPDATE API
         app.put('/orders/:id', async (req, res) => {
             const id = req.params.id;
